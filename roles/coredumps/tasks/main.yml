@@ -1,0 +1,6 @@
+---
+- import_tasks: disable.yml
+  when: disable_coredumps | default(false)
+
+- import_tasks: enable.yml
+  when: not disable_coredumps | default(false)

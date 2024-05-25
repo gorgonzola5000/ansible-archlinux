@@ -1,0 +1,27 @@
+---
+- name: Enable core dumps via 'systemd'
+  ansible.builtin.file:
+    path: '{{ arch_mnt }}/etc/systemd/coredump.conf.d/custom.conf'
+    state: absent
+  notify: systemctl_daemon_reload
+
+- name: Enable core dumps via 'sysctl.d'
+  ansible.posix.sysctl:
+    name: '{{ item }}'
+    state: absent
+    sysctl_file: '{{ arch_mnt }}/etc/sysctl.d/50-coredump.conf'
+    reload: '{{ "no" if bootstrap else "yes" }}'
+  loop:
+    - kernel.core_uses_pid
+    - kernel.core_pattern
+    - fs.suid_dumpable
+
+- name: Enable core dumps via '/etc/security/limits.conf'
+  ansible.builtin.lineinfile:
+    path: '{{ arch_mnt }}/etc/security/limits.conf'
+    regexp: ^#?\*\s+hard\s+core\s+0
+    line: '#*               soft    core            0'
+    state: present
+    owner: root
+    group: root
+    mode: 0644

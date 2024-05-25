@@ -1,0 +1,44 @@
+---
+- name: Create directory '/etc/systemd/coredump.conf.d'
+  ansible.builtin.file:
+    path: '{{ arch_mnt }}/etc/systemd/coredump.conf.d'
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Disable core dumps via 'systemd'
+  ansible.builtin.copy:
+    dest: '{{ arch_mnt }}/etc/systemd/coredump.conf.d/custom.conf'
+    content: |
+      [Coredump]
+      Storage=none
+      ProcessSizeMax=0
+    owner: root
+    group: root
+    mode: 0644
+  notify: systemctl_daemon_reload
+
+- name: Disable core dumps via 'sysctl.d'
+  ansible.posix.sysctl:
+    name: '{{ item.name }}'
+    value: '{{ item.value }}'
+    state: present
+    sysctl_file: '{{ arch_mnt }}/etc/sysctl.d/50-coredump.conf'
+    reload: '{{ "no" if bootstrap else "yes" }}'
+  loop:
+    - { name: 'kernel.core_uses_pid', value: '1' }
+    - { name: 'kernel.core_pattern',  value: '|/bin/false' }
+    - { name: 'fs.suid_dumpable',     value: '0' }
+  loop_control:
+    label: '{{ item.name }}'
+
+- name: Disable core dumps via '/etc/security/limits.conf'
+  ansible.builtin.lineinfile:
+    path: '{{ arch_mnt }}/etc/security/limits.conf'
+    regexp: ^#?\*\s+soft\s+core\s+0
+    line: '*               hard    core            0'
+    state: present
+    owner: root
+    group: root
+    mode: 0644

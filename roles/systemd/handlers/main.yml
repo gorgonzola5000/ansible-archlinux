@@ -1,0 +1,6 @@
+---
+- name: Reload systemd manager configuration
+  ansible.builtin.systemd:
+    daemon_reload: true
+  listen: systemctl_daemon_reload
+  when: not bootstrap
