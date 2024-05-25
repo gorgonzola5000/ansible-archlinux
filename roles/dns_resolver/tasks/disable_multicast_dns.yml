@@ -1,0 +1,11 @@
+---
+- name: Disable Multicast DNS (mDNS)
+  ansible.builtin.copy:
+    dest: '{{ arch_mnt }}/etc/systemd/resolved.conf.d/disable_mdns.conf'
+    content: |
+      [Resolve]
+      MulticastDNS=no
+    owner: root
+    group: root
+    mode: 0644
+  notify: '{{ "enable" if bootstrap else "restart" }}_resolved'

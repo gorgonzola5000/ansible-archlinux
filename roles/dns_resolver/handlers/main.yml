@@ -1,0 +1,14 @@
+---
+- name: Enable 'systemd-resolved.service'
+  systemd_bootstrap:
+    name: systemd-resolved.service
+    state: enabled
+    chroot_mountpoint: '{{ arch_mnt }}'
+  listen: enable_resolved
+
+- name: Restart 'systemd-resolved.service'
+  ansible.builtin.systemd:
+    name: systemd-resolved.service
+    enabled: yes
+    state: restarted
+  listen: restart_resolved

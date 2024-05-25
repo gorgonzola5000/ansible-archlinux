@@ -1,0 +1,19 @@
+---
+- name: Create directory '/etc/systemd/resolved.conf.d'
+  ansible.builtin.file:
+    path: '{{ arch_mnt }}/etc/systemd/resolved.conf.d'
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Configure fallback DNS servers
+  ansible.builtin.copy:
+    dest: '{{ arch_mnt }}/etc/systemd/resolved.conf.d/fallback_dns.conf'
+    content: |
+      [Resolve]
+      FallbackDNS={{ dns_fallback | default(fallback) | join(" ") }}
+    owner: root
+    group: root
+    mode: 0644
+  notify: '{{ "enable" if bootstrap else "restart" }}_resolved'
