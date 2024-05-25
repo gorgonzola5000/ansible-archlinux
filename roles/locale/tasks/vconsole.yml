@@ -1,0 +1,17 @@
+---
+- name: Setup virtual consoles
+  ansible.builtin.lineinfile:
+    path: '{{ arch_mnt }}/etc/vconsole.conf'
+    regexp: '{{ item.regex }}'
+    line: '{{ item.line }}'
+    owner: root
+    group: root
+    mode: 0644
+    state: present
+    create: yes
+  loop:
+    - { regex: KEYMAP=, line: 'KEYMAP={{ locale_vconsole_keymap | default(keymap) }}' }
+    - { regex: FONT=,   line: 'FONT={{ locale_vconsole_font | default(font) }}' }
+  loop_control:
+    label: '{{ item.line }}'
+  notify: update_initramfs

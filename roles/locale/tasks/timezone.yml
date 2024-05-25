@@ -1,0 +1,10 @@
+---
+- name: Set timezone
+  ansible.builtin.file:
+    src: /usr/share/zoneinfo/{{ locale_timezone | default(timezone) }}
+    dest: '{{ arch_mnt }}/etc/localtime'
+    state: link
+    follow: no
+    owner: root
+    group: root
+  notify: generate_etc_adjtime

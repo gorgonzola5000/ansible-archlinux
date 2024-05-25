@@ -1,0 +1,28 @@
+---
+- name: Prepare locales
+  ansible.builtin.lineinfile:
+    dest: '{{ arch_mnt }}/etc/locale.gen'
+    regexp: '{{ item | regex_replace("(\.)", "\\\1") }}'
+    line: '{{ item }}'
+    owner: root
+    group: root
+    mode: 0644
+    state: present
+  loop: '{{ locale_i18n | default(i18n) }}'
+  notify: generate_locales
+
+- name: Set default locale
+  ansible.builtin.lineinfile:
+    path: '{{ arch_mnt }}/etc/locale.conf'
+    regexp: '{{ item.regex }}'
+    line: '{{ item.line }}'
+    owner: root
+    group: root
+    mode: 0644
+    state: present
+    create: yes
+  loop:
+    - { regex: LANG=,     line: 'LANG={{ locale_language | default(language) }}.{{ locale_encoding | default(encoding) }}' }
+    - { regex: LANGUAGE=, line: 'LANGUAGE={{ locale_language | default(language) }}' }
+  loop_control:
+    label: '{{ item.line }}'

@@ -1,0 +1,12 @@
+---
+timezone: Etc/UTC
+
+language: en_US
+encoding: UTF-8
+
+i18n:
+  - en_US.UTF-8 UTF-8
+  - en_US ISO-8859-1
+
+keymap: us
+font: Lat2-Terminus16

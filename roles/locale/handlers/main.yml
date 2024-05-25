@@ -1,0 +1,8 @@
+---
+- name: Generate '/etc/adjtime'
+  ansible.builtin.command: '{{ arch_chroot }} hwclock --systohc'
+  listen: generate_etc_adjtime
+
+- name: Generate locales
+  ansible.builtin.command: '{{ arch_chroot }} locale-gen'
+  listen: generate_locales
