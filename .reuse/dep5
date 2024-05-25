@@ -1,0 +1,16 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Ansible-Archlinux
+Upstream-Contact: Dominik Liebich <dliebich@noreply.codeberg.org>
+Source: https://codeberg.org/dliebich/ansible-archlinux
+
+Files: bootstrap.yml roles/* library/*
+Copyright: 2023 Dominik Liebich
+License: AGPL-3.0-or-later
+
+Files: ansible.cfg staging production group_vars/* host_vars/*
+Copyright: 2023 Dominik Liebich
+License: MIT
+
+Files: README.md .gitignore
+Copyright: 2023 Dominik Liebich
+License: MIT
