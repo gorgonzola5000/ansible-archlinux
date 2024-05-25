@@ -1,0 +1,7 @@
+---
+- name: Install 'zram-generator'
+  pacman_bootstrap:
+    name: zram-generator
+    state: present
+    update_cache: '{{ update_pacman_cache | default(False) }}'
+    chroot_mountpoint: '{{ arch_mnt }}'

@@ -1,0 +1,13 @@
+---
+- name: Configure zram devices
+  ansible.builtin.copy:
+    dest: '{{ arch_mnt }}/etc/systemd/zram-generator.conf'
+    content: |
+      [zram0]
+      zram-size = min(ram, 8192)
+      compression-algorithm = zstd
+      swap-priority = 100
+      fs-type = swap
+    owner: root
+    group: root
+    mode: 0644
