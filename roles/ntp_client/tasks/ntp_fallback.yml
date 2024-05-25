@@ -1,0 +1,11 @@
+---
+- name: Configure fallback NTP servers
+  ansible.builtin.copy:
+    dest: '{{ arch_mnt }}/etc/systemd/timesyncd.conf.d/ntp_fallback.conf'
+    content: |
+      [Time]
+      FallbackNTP={{ ntp_fallback | default(fallback) | join(" ") }}
+    owner: root
+    group: root
+    mode: 0644
+  notify: '{{ "enable" if bootstrap else "restart" }}_timesyncd'

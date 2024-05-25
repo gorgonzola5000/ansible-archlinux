@@ -1,0 +1,11 @@
+---
+- name: Configure NTP servers
+  ansible.builtin.copy:
+    dest: '{{ arch_mnt }}/etc/systemd/timesyncd.conf.d/ntp.conf'
+    content: |
+      [Time]
+      NTP={{ ntp_servers | default(servers) | join(" ") }}
+    owner: root
+    group: root
+    mode: 0644
+  notify: '{{ "enable" if bootstrap else "restart" }}_timesyncd'

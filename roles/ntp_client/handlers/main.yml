@@ -1,0 +1,14 @@
+---
+- name: Enable 'systemd-timesyncd.service'
+  systemd_bootstrap:
+    name: systemd-timesyncd.service
+    state: enabled
+    chroot_mountpoint: '{{ arch_mnt }}'
+  listen: enable_timesyncd
+
+- name: Restart 'systemd-timesyncd.service'
+  ansible.builtin.systemd:
+    name: systemd-timesyncd.service
+    enabled: yes
+    state: restarted
+  listen: restart_timesyncd
