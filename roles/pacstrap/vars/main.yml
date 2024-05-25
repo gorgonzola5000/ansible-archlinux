@@ -1,0 +1,8 @@
+---
+base_packages:
+  - base
+  - linux
+  - linux-firmware
+  - btrfs-progs
+  - python
+  - python-lxml

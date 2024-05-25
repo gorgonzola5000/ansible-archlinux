@@ -1,0 +1,17 @@
+---
+- when: bootstrap
+  block:
+
+  - name: Test whether base packages have already been bootstrapped
+    ansible.builtin.stat:
+      path: '{{ arch_mnt}}/etc/os-release'
+    register: os_release_info
+
+  - when: not os_release_info.stat.exists
+    block:
+
+    - name: Bootstrap base packages
+      ansible.builtin.command: pacstrap {{ arch_mnt }} {{ base_packages | join(" ") }}
+
+    - name: Build local pacman database
+      ansible.builtin.command: '{{ arch_chroot }} pacman -Syy'
