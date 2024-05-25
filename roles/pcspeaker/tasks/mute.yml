@@ -1,0 +1,11 @@
+---
+- name: Mute PC speaker and bell sounds
+  ansible.builtin.copy:
+    dest: '{{ arch_mnt }}/etc/modprobe.d/disable_pcspeaker.conf'
+    content: |
+      install pcspkr /bin/true
+      install snd_pcsp /bin/true
+    owner: root
+    group: root
+    mode: 0644
+  notify: unload_pcspeaker_modules

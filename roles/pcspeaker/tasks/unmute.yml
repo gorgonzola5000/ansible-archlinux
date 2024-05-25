@@ -1,0 +1,5 @@
+---
+- name: Unmute PC speaker and bell sounds
+  ansible.builtin.file:
+    path: '{{ arch_mnt }}/etc/modprobe.d/disable_pcspeaker.conf'
+    state: absent

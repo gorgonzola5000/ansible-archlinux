@@ -1,0 +1,6 @@
+---
+- name: Unload kernel modules for PC speaker and bell sounds
+  ansible.builtin.command: rmmod pcspkr snd_pcsp
+  ignore_errors: yes
+  listen: unload_pcspeaker_modules
+  when: not bootstrap

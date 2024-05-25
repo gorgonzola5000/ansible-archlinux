@@ -1,0 +1,6 @@
+---
+- import_tasks: mute.yml
+  when: mute_pcspeaker | default(true)
+
+- import_tasks: unmute.yml
+  when: not mute_pcspeaker | default(true)
