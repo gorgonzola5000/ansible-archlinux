@@ -1,0 +1,14 @@
+---
+- name: Enable 'nftables.service'
+  systemd_bootstrap:
+    name: nftables.service
+    state: enabled
+    chroot_mountpoint: '{{ arch_mnt }}'
+  listen: enable_nftables
+
+- name: Restart 'nftables.service'
+  ansible.builtin.systemd:
+    name: nftables.service
+    enabled: yes
+    state: restarted
+  listen: restart_nftables

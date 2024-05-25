@@ -1,0 +1,18 @@
+---
+# See: [--noconfirm when conflicting packages](https://bbs.archlinux.org/viewtopic.php?pid=1758719#p1758719)
+- name: Remove 'iptables'
+  pacman_bootstrap:
+    name: iptables
+    state: absent
+    force: yes
+    chroot_mountpoint: '{{ arch_mnt }}'
+
+- name: Install 'nftables'
+  pacman_bootstrap:
+    name:
+      - nftables
+      - iptables-nft
+    state: present
+    update_cache: '{{ update_pacman_cache | default(False) }}'
+    chroot_mountpoint: '{{ arch_mnt }}'
+  notify: '{{ "enable" if bootstrap else "restart" }}_nftables'
