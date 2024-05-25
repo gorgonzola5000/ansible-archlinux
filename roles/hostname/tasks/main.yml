@@ -1,0 +1,6 @@
+---
+- import_tasks: initialize.yml
+  when: bootstrap
+
+- import_tasks: update.yml
+  when: not bootstrap

@@ -1,0 +1,5 @@
+---
+- name: Update hostname
+  ansible.builtin.hostname:
+    name: '{{ hostname | default(inventory_hostname_short) }}'
+    use: systemd

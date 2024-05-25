@@ -1,0 +1,9 @@
+---
+- name: Initialize hostname in '/etc/hostname' (bootstrap only)
+  ansible.builtin.copy:
+    dest: '{{ arch_mnt }}/etc/hostname'
+    content: |
+      {{ hostname | default(inventory_hostname_short) }}
+    owner: root
+    group: root
+    mode: 0644
