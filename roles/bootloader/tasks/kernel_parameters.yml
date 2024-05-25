@@ -1,0 +1,30 @@
+---
+- name: Set fallback kernel parameters
+  vars:
+    luks: rd.luks.name={{ uuid_luks }}=root
+    root: root=/dev/mapper/root rw rootflags=subvol=@root,x-systemd.device-timeout=0
+    zswap: zswap.enabled=0
+    custom: '{{ kernel_parameters | default([]) | join(" ") }}'
+  ansible.builtin.set_fact:
+    kernel_fallback: '{{
+      " ".join((
+        luks,
+        root,
+        zswap,
+        custom
+      )) | regex_replace("\s+", " ")
+    }}'
+
+- name: Set default kernel parameters
+  vars:
+    mitigations: '{{ kernel_disable_cpu_mitigations | default([]) | join(" ") }}'
+    bgrt_disable: '{{ "bgrt_disable" if firmware_uefi and (kernel_disable_bgrt | default("no")) }}'
+  ansible.builtin.set_fact:
+    kernel_default: '{{
+      " ".join((
+        kernel_fallback,
+        mitigations,
+        bgrt_disable,
+        "quiet"
+      )) | regex_replace("\s+", " ")
+    }}'

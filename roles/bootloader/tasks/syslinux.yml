@@ -1,0 +1,30 @@
+---
+# Keyboard options
+# ================
+# Alt - show menu at boot
+
+- name: Install 'SYSLINUX' (Legacy BIOS only)
+  pacman_bootstrap:
+    name: '{{ syslinux_packages }}'
+    state: present
+    update_cache: '{{ update_pacman_cache | default(False) }}'
+    chroot_mountpoint: '{{ arch_mnt }}'
+  notify: install_syslinux
+
+- name: Copy 'SYSLINUX' background image
+  ansible.builtin.get_url:
+    url: https://gitlab.archlinux.org/archlinux/archiso/-/raw/master/configs/releng/syslinux/splash.png?inline=false
+    checksum: sha256:efedc11aeaaf6743dccd68df40f5f7cb71fe0efea9a4f24b8ce8b6e3ca73f686
+    dest: '{{ arch_mnt }}/boot/syslinux/splash.png'
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Configure 'SYSLINUX' menu
+  ansible.builtin.template:
+    src: syslinux.cfg.j2
+    dest: '{{ arch_mnt }}/boot/syslinux/syslinux.cfg'
+    output_encoding: 'cp850'
+    owner: root
+    group: root
+    mode: 0644

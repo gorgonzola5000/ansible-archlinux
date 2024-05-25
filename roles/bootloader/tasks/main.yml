@@ -1,0 +1,9 @@
+---
+- import_tasks: uuid_facts.yml
+- import_tasks: kernel_parameters.yml
+
+- import_tasks: systemd-boot.yml
+  when: firmware_uefi
+
+- import_tasks: syslinux.yml
+  when: firmware_bios

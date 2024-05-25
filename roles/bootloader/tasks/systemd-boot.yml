@@ -1,0 +1,118 @@
+---
+# Keyboard options
+# ================
+# Space   - show menu at boot
+# Up/Down - select entry
+# Enter   - boot the selected entry
+# d       - select the default entry to boot (stored in a non-volatile EFI variable)
+# -/T     - decrease the timeout (stored in a non-volatile EFI variable)
+# +/t     - increase the timeout (stored in a non-volatile EFI variable)
+# e       - edit the kernel command line. It has no effect if the editor config option is set to 0.
+# v       - show the systemd-boot and UEFI version
+# Q       - quit
+# P       - print the current configuration
+# h/?     - help
+
+- name: Install 'systemd-boot' (UEFI only)
+  pacman_bootstrap:
+    name: '{{ systemd_boot_packages }}'
+    state: present
+    update_cache: '{{ update_pacman_cache | default(False) }}'
+    chroot_mountpoint: '{{ arch_mnt }}'
+
+- name: Install 'systemd-boot' to EFI partition
+  ansible.builtin.shell: |
+    if ! {{ arch_chroot }} bootctl is-installed
+    then
+        {{ arch_chroot }} bootctl install && exit 125
+    fi
+  register: bootctl_install
+  changed_when: bootctl_install.rc == 125
+  failed_when: not bootctl_install.rc in [0, 125]
+
+- name: Create pacman hook to automatically update 'systemd-boot'
+  ansible.builtin.copy:
+    dest: '{{ arch_mnt }}/etc/pacman.d/hooks/100-systemd-boot.hook'
+    content: |
+      [Trigger]
+      Type = Package
+      Operation = Upgrade
+      Target = systemd
+
+      [Action]
+      Description = Gracefully upgrading systemd-boot...
+      When = PostTransaction
+      Exec = /usr/bin/systemctl restart systemd-boot-update.service
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Configure 'mkinitcpio' to create unified kernel images
+  ansible.builtin.copy:
+    dest: '{{ arch_mnt }}/etc/mkinitcpio.d/linux.preset'
+    content: |
+      # mkinitcpio preset file for the 'linux' package
+
+      ALL_config="/etc/mkinitcpio.conf"
+      ALL_kver="/boot/vmlinuz-linux"
+
+      PRESETS=('default' 'fallback')
+
+      #default_config="/etc/mkinitcpio.conf"
+      default_image="/boot/initramfs-linux.img"
+      default_uki="/efi/EFI/Linux/archlinux-linux.efi"
+      #default_options=""
+
+      #fallback_config="/etc/mkinitcpio.conf"
+      fallback_image="/boot/initramfs-linux-fallback.img"
+      fallback_uki="/efi/EFI/Linux/archlinux-linux-fallback.efi"
+      fallback_options="-S autodetect --cmdline /etc/kernel/cmdline-fallback"
+    owner: root
+    group: root
+    mode: 0644
+  notify: update_initramfs
+
+- name: Configure 'systemd-boot' to use default kernel parameters
+  ansible.builtin.copy:
+    dest: '{{ arch_mnt }}/etc/kernel/cmdline'
+    content: |
+      {{ kernel_default }}
+    owner: root
+    group: root
+    mode: 0644
+  notify: update_initramfs
+
+- name: Configure 'systemd-boot' to use fallback kernel parameters
+  ansible.builtin.copy:
+    dest: '{{ arch_mnt }}/etc/kernel/cmdline-fallback'
+    content: |
+      {{ kernel_fallback }}
+    owner: root
+    group: root
+    mode: 0644
+  notify: update_initramfs
+
+- name: Configure 'systemd-boot' default options
+  ansible.builtin.copy:
+    dest: '{{ arch_mnt }}/efi/loader/loader.conf'
+    content: |
+      timeout 0
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Remove 'KERNEL_INSTALL_LAYOUT' from '/etc/machine-info'
+  ansible.builtin.lineinfile:
+    path: '{{ arch_mnt }}/etc/machine-info'
+    regexp: '^KERNEL_INSTALL_LAYOUT='
+    state: absent
+
+- name: Define kernel install layout in '/etc/kernel/install.conf'
+  ansible.builtin.lineinfile:
+    path: '{{ arch_mnt }}/etc/kernel/install.conf'
+    regexp: '^layout='
+    line: layout=uki
+    create: yes
+    owner: root
+    group: root
+    mode: 0644

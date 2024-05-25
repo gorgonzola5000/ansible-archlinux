@@ -1,0 +1,6 @@
+---
+dependencies:
+  - role: firmware_facts
+  - role: partition_facts
+  - role: initramfs
+  - role: pacman

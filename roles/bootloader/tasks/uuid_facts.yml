@@ -1,0 +1,5 @@
+---
+- name: Gathering Facts - UUID of LUKS container
+  uuid_facts:
+    device: '{{ device_luks }}'
+    name: luks

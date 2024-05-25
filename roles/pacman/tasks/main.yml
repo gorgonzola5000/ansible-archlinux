@@ -1,0 +1,8 @@
+---
+- name: Create directory '/etc/pacman.d/hooks'
+  ansible.builtin.file:
+    path: '{{ arch_mnt }}/etc/pacman.d/hooks'
+    state: directory
+    owner: root
+    group: root
+    mode: 0755

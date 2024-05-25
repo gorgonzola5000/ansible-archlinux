@@ -1,0 +1,30 @@
+---
+- name: Prepare keyboard layout for 'SYSLINUX'
+  vars:
+    keymap_gz: '{{ locale_syslinux_kbd_layout | default(syslinux_kbd_layout) }}/{{ syslinux_keymap | default(syslinux_keymap) }}.map.gz'
+    keymap_ktl: '{{ arch_mnt }}/boot/syslinux/{{ locale_syslinux_keymap | default(syslinux_keymap) }}.ktl'
+  ansible.builtin.shell: |
+    [ -f {{ keymap_ktl }} ] && exit 125
+
+    {{ arch_chroot }} keytab-lilo \
+      /usr/share/kbd/keymaps/i386/qwerty/us.map.gz \
+      /usr/share/kbd/keymaps/{{ keymap_gz }} \
+    > {{ keymap_ktl }}
+  register: ktl
+  changed_when: ktl.rc == 0
+  failed_when: not ktl.rc in [0, 125]
+  listen: configure_syslinux
+
+- name: Copy 'SYSLINUX' VESA menu
+  ansible.builtin.copy:
+    remote_src: yes
+    src: '{{ arch_mnt }}/usr/lib/syslinux/bios/vesamenu.c32'
+    dest: '{{ arch_mnt }}/boot/syslinux/vesamenu.c32'
+    owner: root
+    group: root
+    mode: 0644
+  listen: configure_syslinux
+
+- name: Install 'SYSLINUX' to MBR
+  ansible.builtin.command: '{{ arch_chroot }} syslinux-install_update -i -a -m'
+  listen: install_syslinux

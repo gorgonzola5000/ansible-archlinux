@@ -1,0 +1,16 @@
+---
+syslinux_keymap: us
+syslinux_kbd_layout: i386/qwerty
+
+syslinux_packages:
+  - '{{ cpu_architecture }}-ucode'
+  - syslinux
+  - gptfdisk
+  - memtest86+
+  - perl
+
+systemd_boot_packages:
+  - '{{ cpu_architecture }}-ucode'
+  - efibootmgr
+  - gptfdisk
+  - dosfstools
