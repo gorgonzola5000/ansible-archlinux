@@ -1,0 +1,12 @@
+---
+bootstrap: no
+ansible_user: user
+
+arch_mnt: ''
+arch_chroot: ''
+
+cpu_architecture: >-
+  {{
+           "intel" if "GenuineIntel" in ansible_facts.processor
+      else "amd"   if "AuthenticAMD" in ansible_facts.processor
+  }}
