@@ -1,0 +1,4 @@
+---
+- import_tasks: motd.yml
+- import_tasks: issue.yml
+- import_tasks: issue_net.yml

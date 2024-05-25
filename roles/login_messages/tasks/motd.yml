@@ -1,0 +1,9 @@
+---
+- name: Set post-login message in '/etc/motd'
+  ansible.builtin.copy:
+    dest: '{{ arch_mnt }}/etc/motd'
+    content: |+
+
+    owner: root
+    group: root
+    mode: 0644

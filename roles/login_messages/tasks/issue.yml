@@ -1,0 +1,10 @@
+---
+- name: Set local pre-login message in '/etc/issue'
+  ansible.builtin.copy:
+    dest: '{{ arch_mnt }}/etc/issue'
+    content: |+
+      Arch Linux \r (\l)
+
+    owner: root
+    group: root
+    mode: 0644

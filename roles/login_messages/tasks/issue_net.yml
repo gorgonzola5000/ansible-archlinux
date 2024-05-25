@@ -1,0 +1,10 @@
+---
+- name: Set network pre-login message in '/etc/issue.net'
+  ansible.builtin.copy:
+    dest: '{{ arch_mnt }}/etc/issue.net'
+    content: |+
+      Arch Linux [{{ inventory_hostname }}]
+
+    owner: root
+    group: root
+    mode: 0644
