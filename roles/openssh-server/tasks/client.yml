@@ -1,0 +1,15 @@
+---
+- name: Configure SSH clients
+  ansible.builtin.blockinfile:
+    path: '{{ arch_mnt }}/etc/ssh/ssh_config'
+    block: |
+      Host *
+        #Compression yes
+        #CompressionLevel 6
+        #HashKnownHosts yes
+        IdentitiesOnly yes
+        ServerAliveInterval 30
+    state: present
+    owner: root
+    group: root
+    mode: 0644

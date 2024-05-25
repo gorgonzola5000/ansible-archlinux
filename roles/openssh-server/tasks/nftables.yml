@@ -1,0 +1,11 @@
+---
+- name: Allow incoming connections to SSH server
+  ansible.builtin.copy:
+    dest: '{{ arch_mnt }}/etc/nftables.d/22-openssh-server.input.conf'
+    content: |
+      # OpenSSH server
+      tcp dport 22 accept
+    owner: root
+    group: root
+    mode: 0644
+  notify: '{{ "enable" if bootstrap else "restart" }}_nftables'
