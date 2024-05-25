@@ -1,0 +1,35 @@
+---
+- name: Configure ethernet interface with static IPv4 address
+  ansible.builtin.copy:
+    dest: '{{ arch_mnt }}/etc/systemd/network/ethernet.network'
+    content: |
+      [Match]
+      Name={{ ethernet_interface }}
+
+      [Network]
+      {% if ipv4_addresses is defined %}
+      {% for address in ipv4_addresses %}
+      Address={{ address }}
+      {% endfor %}
+      {% endif %}
+      {% if dns_servers is defined %}
+      {% for server in dns_servers %}
+      DNS={{ server }}
+      {% endfor %}
+      {% endif %}
+      DHCP=ipv6
+      LLMNR=no
+
+      [Route]
+      {% if gateway is defined %}
+      Gateway={{ gateway }}
+      {% endif %}
+      Metric=10
+
+      [DHCPv6]
+      UseHostname=no
+      RouteMetric=10
+    owner: root
+    group: root
+    mode: 0644
+  notify: '{{ "enable" if bootstrap else "reload" }}_networkd'

@@ -1,0 +1,14 @@
+---
+- name: Enable 'systemd-networkd.service'
+  systemd_bootstrap:
+    name: systemd-networkd.service
+    state: enabled
+    chroot_mountpoint: '{{ arch_mnt }}'
+  listen: enable_networkd
+
+- name: Reload 'systemd-networkd.service'
+  ansible.builtin.systemd:
+    name: systemd-networkd.service
+    enabled: yes
+    state: reloaded
+  listen: reload_networkd
