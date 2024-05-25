@@ -1,0 +1,10 @@
+---
+- name: Create and open LUKS2 container
+  community.crypto.luks_device:
+    device: '{{ device_luks }}'
+    passphrase: '{{ luks_passphrase }}'
+    name: root
+    type: luks2
+    cipher: '{{ luks_cipher }}'
+    keysize: '{{ luks_keysize }}'
+    state: opened

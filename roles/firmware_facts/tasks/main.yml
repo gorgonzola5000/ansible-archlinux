@@ -1,0 +1,3 @@
+---
+- name: Gathering Facts - UEFI or BIOS
+  firmware_facts:

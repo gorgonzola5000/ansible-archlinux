@@ -1,0 +1,6 @@
+---
+- when: bootstrap
+  block:
+
+  - import_tasks: partitions.yml
+  - import_tasks: luks_container.yml

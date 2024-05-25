@@ -1,0 +1,19 @@
+---
+- name: Create boot/EFI partition
+  community.general.parted:
+    device: '{{ drive }}'
+    number: 1
+    part_end: '{{ partition_boot_size | default("256MiB") }}'
+    label: gpt
+    name: '{{ "EFI" if firmware_uefi else "boot" }}'
+    flags: [ '{{ "esp" if firmware_uefi else "legacy_boot" }}' ]
+    state: present
+
+- name: Create LUKS2 encrypted root partition
+  community.general.parted:
+    device: '{{ drive }}'
+    number: 2
+    part_start: '{{ partition_boot_size | default("256MiB") }}'
+    label: gpt
+    name: Linux
+    state: present
