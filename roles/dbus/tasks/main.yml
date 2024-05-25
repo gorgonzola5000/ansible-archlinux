@@ -1,0 +1,8 @@
+---
+- name: Create directory '/etc/dbus-1/system.d'
+  ansible.builtin.file:
+    path: '{{ arch_mnt }}/etc/dbus-1/system.d'
+    state: directory
+    owner: root
+    group: root
+    mode: 0755

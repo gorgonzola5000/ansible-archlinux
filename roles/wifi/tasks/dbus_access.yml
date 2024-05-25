@@ -1,0 +1,29 @@
+---
+- name: Copy 'dbus' rules for 'IWD'
+  ansible.builtin.copy:
+    dest: '{{ arch_mnt }}/etc/dbus-1/system.d/iwd-strict.conf'
+    content: |
+      <!-- prevent local users from changing iwd settings, but allow
+           reading status information. overrides some part of
+           /usr/share/dbus-1/system.d/iwd-dbus.conf. -->
+
+      <!-- This configuration file specifies the required security policies
+           for iNet Wireless Daemon to work. -->
+
+      <!DOCTYPE busconfig PUBLIC "-//freedesktop//DTD D-BUS Bus Configuration 1.0//EN"
+       "http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd">
+      <busconfig>
+
+        <policy at_console="true">
+          <deny send_destination="net.connman.iwd"/>
+          <allow send_destination="net.connman.iwd" send_interface="org.freedesktop.DBus.Properties" send_member="GetAll" />
+          <allow send_destination="net.connman.iwd" send_interface="org.freedesktop.DBus.Properties" send_member="Get" />
+          <allow send_destination="net.connman.iwd" send_interface="org.freedesktop.DBus.ObjectManager" send_member="GetManagedObjects" />
+          <allow send_destination="net.connman.iwd" send_interface="net.connman.iwd.Device" send_member="RegisterSignalLevelAgent" />
+          <allow send_destination="net.connman.iwd" send_interface="net.connman.iwd.Device" send_member="UnregisterSignalLevelAgent" />
+        </policy>
+
+      </busconfig>
+    owner: root
+    group: root
+    mode: 0644
