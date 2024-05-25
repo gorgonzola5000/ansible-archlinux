@@ -1,0 +1,10 @@
+---
+kms_module: virtio-gpu
+
+drive: /dev/vda
+
+luks_cipher: aes-xts-plain64
+luks_keysize: 256
+
+ethernet_interface: enp1s0
+ethernet_mode: dhcp
