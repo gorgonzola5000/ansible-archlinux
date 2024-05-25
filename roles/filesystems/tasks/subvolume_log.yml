@@ -1,0 +1,38 @@
+---
+- name: Check whether mount point for subvolume '@log' already exists
+  ansible.builtin.stat:
+    path: '{{ arch_mnt }}/var/log'
+  register: log_directory
+
+- name: Create mount point for subvolume '@log'
+  ansible.builtin.file:
+    path: '{{ arch_mnt }}{{ item.path }}'
+    state: directory
+    owner: root
+    group: root
+    mode: '{{ item.mode }}'
+  loop:
+    - { path: '/var',     mode: '0755' }
+    - { path: '/var/log', mode: '0500' }
+  loop_control:
+    label: '{{ item.path }}'
+  when: not log_directory.stat.exists
+
+- name: Mount subvolume '@log' to chroot environment (bootstrap only)
+  ansible.posix.mount:
+    path: '{{ arch_mnt }}/var/log'
+    src: UUID={{ uuid_root }}
+    fstype: btrfs
+    opts: '{{ fstab_root | default(root) }},subvol=@log'
+    state: mounted
+  when: bootstrap
+
+- name: Set mount options of subvolume '@log'
+  ansible.posix.mount:
+    fstab: '{{ arch_mnt }}/etc/fstab'
+    path: /var/log
+    src: UUID={{ uuid_root }}
+    fstype: btrfs
+    opts: '{{ fstab_root | default(root) }},subvol=@log'
+    passno: '0'
+    state: '{{ "present" if bootstrap else "mounted" }}'

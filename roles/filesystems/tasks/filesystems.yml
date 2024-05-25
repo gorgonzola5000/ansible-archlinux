@@ -1,0 +1,20 @@
+---
+- name: Create ext4 file system on boot partition (Legacy BIOS only)
+  community.general.filesystem:
+    dev: '{{ device_boot }}'
+    fstype: ext4
+    opts: -L boot
+  when: firmware_bios
+
+- name: Create FAT32 file system on EFI partition (UEFI only)
+  community.general.filesystem:
+    dev: '{{ device_boot }}'
+    fstype: vfat
+    opts: -F 32 -n EFI
+  when: firmware_uefi
+
+- name: Create btrfs file system on root volume
+  community.general.filesystem:
+    dev: /dev/mapper/root
+    fstype: btrfs
+    opts: -L root

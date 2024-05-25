@@ -1,0 +1,45 @@
+---
+- name: Determine mount point for boot/EFI partition
+  ansible.builtin.set_fact:
+    boot_mountpoint: '{{ "/efi" if firmware_uefi else "/boot" }}'
+
+- name: Check whether mount point for boot/EFI partition already exists
+  ansible.builtin.stat:
+    path: '{{ arch_mnt }}{{ boot_mountpoint }}'
+  register: boot_directory
+
+- name: Create mount point for boot/EFI partition
+  ansible.builtin.file:
+    path: '{{ arch_mnt }}{{ boot_mountpoint }}'
+    state: directory
+    owner: root
+    group: root
+    mode: 0500
+  when: not boot_directory.stat.exists
+
+- name: Mount boot/EFI partition to chroot environment (bootstrap only)
+  ansible.posix.mount:
+    path: '{{ arch_mnt }}{{ boot_mountpoint }}'
+    src: UUID={{ uuid_boot }}
+    fstype: '{{ "vfat" if firmware_uefi else "ext4" }}'
+    opts: '{{
+           fstab_efi | default(efi)
+        if firmware_uefi
+      else fstab_boot | default(boot)
+    }}'
+    state: mounted
+  when: bootstrap
+
+- name: Set mount options of boot/EFI partition
+  ansible.posix.mount:
+    fstab: '{{ arch_mnt }}/etc/fstab'
+    path: '{{ boot_mountpoint }}'
+    src: UUID={{ uuid_boot }}
+    fstype: '{{ "vfat" if firmware_uefi else "ext4" }}'
+    opts: '{{
+           fstab_efi | default(efi)
+        if firmware_uefi
+      else fstab_boot | default(boot)
+    }}'
+    passno: '2'
+    state: '{{ "present" if bootstrap else "mounted" }}'

@@ -1,0 +1,11 @@
+---
+- import_tasks: filesystems.yml
+- import_tasks: uuid_facts.yml
+- import_tasks: subvolumes.yml
+- import_tasks: subvolume_root.yml
+- import_tasks: subvolume_home.yml
+- import_tasks: subvolume_pacman_cache.yml
+- import_tasks: subvolume_log.yml
+- import_tasks: boot_efi.yml
+- import_tasks: efivars.yml
+- import_tasks: proc.yml

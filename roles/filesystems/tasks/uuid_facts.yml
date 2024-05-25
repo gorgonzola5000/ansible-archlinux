@@ -1,0 +1,10 @@
+---
+- name: Gathering Facts - UUIDs of partitions and volumes
+  uuid_facts:
+    device: '{{ item.device }}'
+    name: '{{ item.name }}'
+  loop:
+    - { device: '{{ device_boot }}', name: boot }
+    - { device: /dev/mapper/root, name: root }
+  loop_control:
+    label: '{{ item.name }}'

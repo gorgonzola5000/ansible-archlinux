@@ -1,0 +1,9 @@
+---
+- name: Set mount options of '/proc' file system
+  ansible.posix.mount:
+    fstab: '{{ arch_mnt }}/etc/fstab'
+    path: /proc
+    src: proc
+    fstype: proc
+    opts: '{{ fstab_proc | default(proc) }}'
+    state: '{{ "present" if bootstrap else "mounted" }}'

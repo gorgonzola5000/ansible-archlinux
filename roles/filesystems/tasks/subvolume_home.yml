@@ -1,0 +1,33 @@
+---
+- name: Check whether mount point for subvolume '@home' already exists
+  ansible.builtin.stat:
+    path: '{{ arch_mnt }}/home'
+  register: home_directory
+
+- name: Create mount point for subvolume '@home'
+  ansible.builtin.file:
+    path: '{{ arch_mnt }}/home'
+    state: directory
+    owner: root
+    group: root
+    mode: 0500
+  when: not home_directory.stat.exists
+
+- name: Mount subvolume '@home' to chroot environment (bootstrap only)
+  ansible.posix.mount:
+    path: '{{ arch_mnt }}/home'
+    src: UUID={{ uuid_root }}
+    fstype: btrfs
+    opts: '{{ fstab_root | default(root) }},subvol=@home'
+    state: mounted
+  when: bootstrap
+
+- name: Set mount options of subvolume '@home'
+  ansible.posix.mount:
+    fstab: '{{ arch_mnt }}/etc/fstab'
+    path: /home
+    src: UUID={{ uuid_root }}
+    fstype: btrfs
+    opts: '{{ fstab_root | default(root) }},subvol=@home'
+    passno: '0'
+    state: '{{ "present" if bootstrap else "mounted" }}'

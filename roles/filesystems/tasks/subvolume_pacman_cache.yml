@@ -1,0 +1,39 @@
+---
+- name: Check whether mount point for subvolume '@pacman_cache' already exists
+  ansible.builtin.stat:
+    path: '{{ arch_mnt }}/var/cache/pacman'
+  register: pacman_cache_directory
+
+- name: Create mount point for subvolume '@pacman_cache'
+  ansible.builtin.file:
+    path: '{{ arch_mnt }}{{ item.path }}'
+    state: directory
+    owner: root
+    group: root
+    mode: '{{ item.mode }}'
+  loop:
+    - { path: '/var',              mode: '0755' }
+    - { path: '/var/cache',        mode: '0755' }
+    - { path: '/var/cache/pacman', mode: '0500' }
+  loop_control:
+    label: '{{ item.path }}'
+  when: not pacman_cache_directory.stat.exists
+
+- name: Mount subvolume '@pacman_cache' to chroot environment (bootstrap only)
+  ansible.posix.mount:
+    path: '{{ arch_mnt }}/var/cache/pacman'
+    src: UUID={{ uuid_root }}
+    fstype: btrfs
+    opts: '{{ fstab_root | default(root) }},subvol=@pacman_cache'
+    state: mounted
+  when: bootstrap
+
+- name: Set mount options of subvolume '@pacman_cache'
+  ansible.posix.mount:
+    fstab: '{{ arch_mnt }}/etc/fstab'
+    path: /var/cache/pacman
+    src: UUID={{ uuid_root }}
+    fstype: btrfs
+    opts: '{{ fstab_root | default(root) }},subvol=@pacman_cache'
+    passno: '0'
+    state: '{{ "present" if bootstrap else "mounted" }}'

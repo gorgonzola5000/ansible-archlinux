@@ -1,0 +1,19 @@
+---
+- name: Mount subvolume '@root' to chroot environment (bootstrap only)
+  ansible.posix.mount:
+    path: '{{ arch_mnt }}/'
+    src: UUID={{ uuid_root }}
+    fstype: btrfs
+    opts: '{{ fstab_root | default(root) }},subvol=@root'
+    state: mounted
+  when: bootstrap
+
+- name: Set mount options of subvolume '@root'
+  ansible.posix.mount:
+    fstab: '{{ arch_mnt }}/etc/fstab'
+    path: /
+    src: UUID={{ uuid_root }}
+    fstype: btrfs
+    opts: '{{ fstab_root | default(root) }},subvol=@root'
+    passno: '1'
+    state: '{{ "present" if bootstrap else "mounted" }}'

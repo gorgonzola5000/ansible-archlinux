@@ -1,0 +1,6 @@
+---
+root: rw,relatime,compress=zstd
+boot: rw,relatime
+efi: defaults,showexec,umask=0077
+efivars: defaults,nosuid,nodev,noexec
+proc: defaults,nosuid,nodev,noexec

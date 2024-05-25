@@ -1,0 +1,10 @@
+---
+- name: Set mount options of UEFI variables
+  ansible.posix.mount:
+    fstab: '{{ arch_mnt }}/etc/fstab'
+    path: /sys/firmware/efi/efivars
+    src: efivarfs
+    fstype: efivarfs
+    opts: '{{ fstab_efivars | default(efivars) }}'
+    state: '{{ "present" if bootstrap else "mounted" }}'
+  when: firmware_uefi

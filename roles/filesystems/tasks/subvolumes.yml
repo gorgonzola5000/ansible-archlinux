@@ -1,0 +1,26 @@
+---
+- name: Create temporary mount point for root file system
+  ansible.builtin.file:
+    path: /tmp/btrfs-subvolumes
+    state: directory
+    owner: root
+    group: root
+    mode: 0500
+
+- name: Mount root filesystem to access subvolumes
+  ansible.posix.mount:
+    path: /tmp/btrfs-subvolumes
+    src: UUID={{ uuid_root }}
+    fstype: btrfs
+    opts: '{{ fstab_root | default(root) }}'
+    state: mounted
+
+- name: Create btrfs subvolumes
+  community.general.btrfs_subvolume:
+    name: '{{ item }}'
+    filesystem_label: root
+  loop:
+    - '/@root'
+    - '/@home'
+    - '/@pacman_cache'
+    - '/@log'
