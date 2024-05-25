@@ -1,0 +1,3 @@
+---
+- import_tasks: swappiness.yml
+- import_tasks: cache_pressure.yml

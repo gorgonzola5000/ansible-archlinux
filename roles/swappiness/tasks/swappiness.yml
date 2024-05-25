@@ -1,0 +1,8 @@
+---
+- name: Set swappiness
+  ansible.posix.sysctl:
+    name: vm.swappiness
+    value: '{{ swappiness | default(60) }}'
+    state: present
+    sysctl_file: '{{ arch_mnt }}/etc/sysctl.d/50-swappiness.conf'
+    reload: '{{ "no" if bootstrap else "yes" }}'
