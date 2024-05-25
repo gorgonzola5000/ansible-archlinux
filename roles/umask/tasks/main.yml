@@ -1,0 +1,30 @@
+---
+- name: Set umask via '/etc/profile'
+  ansible.builtin.lineinfile:
+    path: '{{ arch_mnt }}/etc/profile'
+    regexp: ^umask
+    line: umask {{ umask | default('022') }}
+    owner: root
+    group: root
+    mode: 0644
+    state: present
+
+- name: Set umask via '/etc/login.defs'
+  ansible.builtin.lineinfile:
+    path: '{{ arch_mnt }}/etc/login.defs'
+    regexp: ^UMASK
+    line: UMASK		{{ umask | default('022') }}
+    owner: root
+    group: root
+    mode: 0644
+    state: present
+
+- name: Set umask via '/etc/pam.d/login'
+  ansible.builtin.lineinfile:
+    path: '{{ arch_mnt }}/etc/pam.d/login'
+    regexp: pam_umask.so
+    line: session    optional     pam_umask.so umask={{ umask | default('022') }}
+    owner: root
+    group: root
+    mode: 0644
+    state: present
