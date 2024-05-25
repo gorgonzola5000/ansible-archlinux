@@ -1,0 +1,13 @@
+---
+hooks:
+  - base
+  - systemd
+  - autodetect
+  - microcode
+  - keyboard
+  - sd-vconsole
+  - modconf
+  - block
+  - sd-encrypt
+  - filesystems
+  - fsck

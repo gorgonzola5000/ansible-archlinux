@@ -1,0 +1,4 @@
+---
+- name: Build initial RAM disk
+  ansible.builtin.command: '{{ arch_chroot }} mkinitcpio -P'
+  listen: update_initramfs

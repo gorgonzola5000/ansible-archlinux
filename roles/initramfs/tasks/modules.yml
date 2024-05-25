@@ -1,0 +1,19 @@
+---
+- name: Configure MODULES in '/etc/mkinitcpio.conf'
+  vars:
+    kms: '{{ kms_module | default("") }}'
+    other: '{{ initramfs_modules | default([]) | join(" ") }}'
+  ansible.builtin.lineinfile:
+    dest: '{{ arch_mnt }}/etc/mkinitcpio.conf'
+    regexp: ^MODULES=
+    line: 'MODULES=({{
+      " ".join((
+        kms,
+        other
+      )) | regex_replace("\s+", " ")
+    }})'
+    owner: root
+    group: root
+    mode: 0644
+    state: present
+  notify: update_initramfs

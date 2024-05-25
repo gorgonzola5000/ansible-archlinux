@@ -1,0 +1,13 @@
+---
+- name: Configure HOOKS in '/etc/mkinitcpio.conf'
+  ansible.builtin.lineinfile:
+    dest: '{{ arch_mnt }}/etc/mkinitcpio.conf'
+    regexp: ^HOOKS=
+    line: 'HOOKS=({{
+      initramfs_hooks | default(hooks) | join(" ")
+    }})'
+    owner: root
+    group: root
+    mode: 0644
+    state: present
+  notify: update_initramfs

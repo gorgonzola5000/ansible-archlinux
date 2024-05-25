@@ -1,0 +1,3 @@
+---
+- import_tasks: hooks.yml
+- import_tasks: modules.yml
