@@ -1,0 +1,54 @@
+---
+- name: Bootstrap Arch Linux
+  hosts: bootstrap
+
+  pre_tasks:
+    - name: Check for Arch Linux live environment
+      ansible.builtin.fail:
+        msg: Aborting - This host hasn't been booted from an Arch Linux installer medium!
+      when: ansible_nodename != 'archiso'
+
+    - name: Synchronize system clock via NTP
+      ansible.builtin.command: timedatectl set-ntp true
+      changed_when: false
+
+  roles:
+    - name: partition
+    - name: filesystems
+    - name: pacstrap
+    - name: zram
+    - name: initramfs
+    - name: locale
+    - name: swappiness
+    - name: coredumps
+    - name: umask
+    - name: pcspeaker
+    - name: login_messages
+    - name: bootloader
+    - name: hosts
+    - name: hostname
+    - name: dns_resolver
+    - name: ntp_client
+    - name: ethernet
+    - name: wifi
+    - name: nftables
+    - name: openssh-server
+
+  tasks:
+    - name: Check whether root account is blocked or has password already set
+      ansible.builtin.command: grep -E '^root:(\$|\!)' {{ arch_mnt }}/etc/shadow
+      register: root_password_set
+      failed_when: not root_password_set.rc in [0, 1]
+      changed_when: false
+
+    - name: Set default root password
+      vars:
+        mtime: '{{ (ansible_facts.date_time.epoch|int/86400)|int }}'
+      ansible.builtin.lineinfile:
+        path: '{{ arch_mnt }}/etc/shadow'
+        regexp: '^root:'
+        line: 'root:{{ root_password }}:{{ mtime }}:0:99999:7:::'
+        owner: root
+        group: root
+        mode: 0600
+      when: root_password_set.rc == 1
