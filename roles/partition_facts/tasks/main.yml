@@ -6,6 +6,6 @@
       else "p"     if drive is regex("^/dev/nvme")
       else ""
   }}'
-  set_fact:
+  ansible.builtin.set_fact:
     device_boot: '{{ drive }}{{ prefix }}1'
     device_luks: '{{ drive }}{{ prefix }}2'
