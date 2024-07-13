@@ -1,12 +1,14 @@
 ---
-timezone: Etc/UTC
+timezone: Europe/Warsaw
 
 language: en_US
 encoding: UTF-8
+locale_time: en_DK
 
 i18n:
   - en_US.UTF-8 UTF-8
-  - en_US ISO-8859-1
+  - pl_PL.UTF-8 UTF-8
+  - en_DK.UTF-8 UTF-8
 
-keymap: us
+keymap: pl
 font: Lat2-Terminus16

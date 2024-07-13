@@ -24,5 +24,6 @@
   loop:
     - { regex: LANG=,     line: 'LANG={{ locale_language | default(language) }}.{{ locale_encoding | default(encoding) }}' }
     - { regex: LANGUAGE=, line: 'LANGUAGE={{ locale_language | default(language) }}' }
+    - { regex: LC_TIME=,  line: 'LC_TIME={{ locale_time | default(language) }}.{{ locale_encoding | default(encoding) }}' }
   loop_control:
     label: '{{ item.line }}'
