@@ -1,0 +1,8 @@
+---
+- name: Install 'NetworkManager'
+  pacman_bootstrap:
+    name: networkmanager
+    state: present
+    update_cache: '{{ update_pacman_cache | default(False) }}'
+    chroot_mountpoint: '{{ arch_mnt }}'
+  notify: '{{ "enable" if bootstrap else "reload" }}_NetworkManager'

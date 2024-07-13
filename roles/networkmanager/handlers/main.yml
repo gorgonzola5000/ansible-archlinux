@@ -1,0 +1,14 @@
+---
+- name: Enable 'NetworkManager.service'
+  systemd_bootstrap:
+    name: NetworkManager.service
+    state: enabled
+    chroot_mountpoint: '{{ arch_mnt }}'
+  listen: enable_NetworkManager
+
+- name: Reload 'NetworkManager.service'
+  ansible.builtin.systemd:
+    name: NetworkManager.service
+    enabled: yes
+    state: reloaded
+  listen: reload_NetworkManager

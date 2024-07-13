@@ -27,9 +27,10 @@
     - name: bootloader
     - name: hosts
     - name: hostname
+    - name: networkmanager
 #    - name: dns_resolver
     - name: ntp_client
-    - name: ethernet
+#    - name: ethernet
 #    - name: wifi
 #    - name: nftables
 #    - name: openssh-server
