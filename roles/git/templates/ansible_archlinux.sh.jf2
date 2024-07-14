@@ -1,0 +1,26 @@
+#!bin/bash
+usage () {
+    cat <<HELP_USAGE
+
+    Run setup.yml from <branch-name>. Repository should have been specified during this script creation (running bootstrap.yml).
+
+    $0 <branch-name>
+HELP_USAGE
+}
+
+die() { echo"$*" >&2; exit2; }
+
+while getopts h:-: OPT; do
+  if [ "$OPT" = "-" ]; then
+    OPT="${OPTARG%%=*}"
+    OPTARG="${OPTARG#"$OPT"}"
+    OPTARG="${OPTARG#=}"
+  fi
+  case "$OPT" in
+    h | help )	  usage ;;
+    \? )	  exit 2 ;;
+    * )		  die "Illegal option --$OPT" ;;
+  esac
+done
+
+ansible-pull --url {{ repo_url }} --connection https --checkout $1 /root/setup.yml

@@ -28,12 +28,7 @@
     - name: hosts
     - name: hostname
     - name: networkmanager
-#    - name: dns_resolver
     - name: ntp_client
-#    - name: ethernet
-#    - name: wifi
-#    - name: nftables
-#    - name: openssh-server
 
   tasks:
     - name: Check whether root account is blocked or has password already set

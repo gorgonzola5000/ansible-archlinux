@@ -1,0 +1,19 @@
+---
+- name: Ensure sudo, groupadd, groupdel, groupmod are present
+  community.general.pacman:
+    name: 
+     - sudo
+     - groupadd
+     - groupdel
+     - groupmod
+    state: present
+- name: Ensure group "sudo" exists
+  ansible.builtin.group:
+    name: sudo
+    state: present
+- name: Add the specified user, appending the group 'sudo' to the user's groups
+  ansible.builtin.user:
+    name: '{{ username }}'
+    groups: sudo
+    append: yes
+    create_home: yes

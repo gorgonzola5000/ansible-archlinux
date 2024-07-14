@@ -1,0 +1,16 @@
+---
+- name: Install Ansible and git
+  pacman_bootstrap:
+    name:
+     - ansible
+     - git
+    state: present
+    update_cache: '{{ update_pacman_cache | default(False) }}'
+    chroot_mountpoint: '{{ arch_mnt }}'
+- name: Create shell script for setup after reboot
+  ansible.builtin.template:
+    src: ansible_archlinux.sh.jf2
+    dest: '{{ arch_mnt }}/root/ansible_archlinux.sh'
+    owner: root
+    group: root
+    mode: '0744'

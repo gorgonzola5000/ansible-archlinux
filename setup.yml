@@ -1,0 +1,6 @@
+---
+- name: Setup Arch Linux
+  hosts: dev
+  roles:
+    - name: user_creation
+    - name: git
