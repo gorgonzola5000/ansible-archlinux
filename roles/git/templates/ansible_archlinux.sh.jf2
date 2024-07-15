@@ -23,4 +23,4 @@ while getopts h:-: OPT; do
   esac
 done
 
-ansible-pull --url {{ repo_url }} --connection https --checkout $1 /root/setup.yml
+ansible-pull --url {{ repo_url }} --connection https --checkout $1 setup.yml
