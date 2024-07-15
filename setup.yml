@@ -1,6 +1,13 @@
 ---
 - name: Setup Arch Linux
-  hosts: dev
+  hosts: localhost
   roles:
-    - name: user_creation
-    - name: git
+   - name: user_creation
+  tasks:
+   - name: Install packages
+     community.general.pacman:
+       name: 
+        - plasma
+        - kde-applications
+        - firefox
+       state: present

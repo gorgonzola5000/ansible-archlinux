@@ -3,9 +3,6 @@
   community.general.pacman:
     name: 
      - sudo
-     - groupadd
-     - groupdel
-     - groupmod
     state: present
 - name: Ensure group "sudo" exists
   ansible.builtin.group:

@@ -8,3 +8,6 @@ luks_keysize: 256
 
 ethernet_interface: ens18
 ethernet_mode: dhcp
+
+username: gorgonzola5000
+repo_url: https://github.com/gorgonzola5000/ansible-archlinux.git
