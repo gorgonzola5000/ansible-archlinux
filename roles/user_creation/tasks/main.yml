@@ -1,8 +1,9 @@
 ---
-- name: Ensure sudo, groupadd, groupdel, groupmod are present
+- name: Ensure sudo and openssh are installed
   community.general.pacman:
     name: 
      - sudo
+     - openssh
     state: present
 - name: Ensure group "sudo" exists
   ansible.builtin.group:
