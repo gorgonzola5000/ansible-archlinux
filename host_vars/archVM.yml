@@ -1,0 +1,4 @@
+---
+kms_module: virtio-gpu
+
+drive: /dev/sda
