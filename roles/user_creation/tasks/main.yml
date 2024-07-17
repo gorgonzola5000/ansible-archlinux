@@ -14,3 +14,5 @@
     groups: sudo
     append: yes
     create_home: yes
+    generate_ssh_key: yes
+    password: '{{ user_password }}'
