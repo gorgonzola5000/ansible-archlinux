@@ -4,6 +4,7 @@
   connection: local
   roles:
    - name: user_creation
+   - name: autologin
   tasks:
    - name: Install packages
      community.general.pacman:

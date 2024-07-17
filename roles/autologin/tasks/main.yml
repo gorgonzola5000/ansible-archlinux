@@ -1,0 +1,14 @@
+---
+- name: Create drop-in files directory
+  ansible.builtin.file:
+    path: /etc/systemd/system/getty@tty1.service.d
+    state: directory
+    mode: '0644'
+- name: Create getty drop-in file
+  ansible.builtin.template:
+    src: autologin.conf.jf2
+    dest: '/etc/systemd/system/getty@tty1.service.d/autologin.conf'
+    owner: root
+    group: root
+    mode: '0644'
+   
