@@ -1,6 +1,7 @@
 ---
 - name: Setup Arch Linux
-  hosts: localhost
+  hosts: dev
+  connection: local
   roles:
    - name: user_creation
   tasks:

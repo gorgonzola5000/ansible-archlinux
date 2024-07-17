@@ -17,3 +17,10 @@
     create_home: yes
     generate_ssh_key: yes
     password: '{{ user_password }}'
+- name: Enable sudo without password for specified user
+  ansible.builtin.template:
+    src: sudo_no_password.jf2
+    dest: '/etc/sudoers.d/{{ username }}'
+    mode: '0440'
+    group: 0
+    owner: 0
