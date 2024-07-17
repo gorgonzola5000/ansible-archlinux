@@ -1,8 +1,0 @@
----
-- name: Create directory '/etc/systemd/network'
-  ansible.builtin.file:
-    path: '{{ arch_mnt }}/etc/systemd/network'
-    state: directory
-    owner: root
-    group: root
-    mode: 0755

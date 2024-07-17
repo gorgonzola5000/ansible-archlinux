@@ -1,9 +1,0 @@
----
-- when: ethernet | default(true)
-  block:
-
-  - import_tasks: dhcp.yml
-    when: ethernet_mode | default("dhcp") == "dhcp"
-
-  - import_tasks: static_ipv4.yml
-    when: ethernet_mode | default("dhcp") == "static-ipv4"

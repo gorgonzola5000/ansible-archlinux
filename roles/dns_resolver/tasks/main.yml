@@ -1,5 +1,0 @@
----
-- import_tasks: local_resolver.yml
-- import_tasks: dns_fallback_servers.yml
-- import_tasks: disable_multicast_dns.yml
-- import_tasks: disable_llmnr.yml

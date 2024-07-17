@@ -1,8 +1,0 @@
----
-- name: Install 'OpenSSH'
-  pacman_bootstrap:
-    name: openssh
-    state: present
-    update_cache: '{{ update_pacman_cache | default(False) }}'
-    chroot_mountpoint: '{{ arch_mnt }}'
-  notify: '{{ "enable" if bootstrap else "reload" }}_openssh_server'

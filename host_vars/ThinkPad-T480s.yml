@@ -1,0 +1,7 @@
+---
+#kms_module: virtio-gpu
+
+drive: /dev/nvme0n1
+
+luks_cipher: aes-xts-plain64
+luks_keysize: 256

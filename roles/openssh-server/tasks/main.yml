@@ -1,5 +1,0 @@
----
-- import_tasks: install.yml
-- import_tasks: server.yml
-- import_tasks: client.yml
-- import_tasks: nftables.yml

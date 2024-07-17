@@ -29,7 +29,7 @@
     - name: hostname
     - name: networkmanager
     - name: ntp_client
-    - name: git
+    - name: ansible
 
   tasks:
     - name: Check whether root account is blocked or has password already set
