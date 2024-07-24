@@ -1,6 +1,6 @@
 ---
 - name: Bootstrap Arch Linux
-  hosts: bootstrap
+  hosts: localhost
 
   pre_tasks:
     - name: Check for Arch Linux live environment
