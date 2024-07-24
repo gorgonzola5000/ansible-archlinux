@@ -1,4 +1,5 @@
 [bootstrap]
 archVM              ansible_host=192.168.1.88
+ThinkPad-T480s      ansible_host=127.0.0.1
 [dev]
 ThinkPad-T480s      ansible_host=127.0.0.1
