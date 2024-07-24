@@ -3,10 +3,10 @@
   hosts: bootstrap
 
   pre_tasks:
-    - name: Check for Arch Linux live environment
-      ansible.builtin.fail:
-        msg: Aborting - This host hasn't been booted from an Arch Linux installer medium!
-      when: ansible_nodename != 'archiso'
+#    - name: Check for Arch Linux live #environment
+#      ansible.builtin.fail:
+#        msg: Aborting - This host hasn't been booted from an Arch Linux installer medium!
+#      when: ansible_nodename != 'archiso'
 
     - name: Synchronize system clock via NTP
       ansible.builtin.command: timedatectl set-ntp true
