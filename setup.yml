@@ -19,4 +19,9 @@
         - polkit-kde-agent
         - qt5-wayland
         - qt6-wayland
+        - neovim
+        - man
+        - less
+        - wofi
        state: present
+

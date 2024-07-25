@@ -4,6 +4,7 @@
     name: 
      - sudo
      - openssh
+     - zsh
     state: present
 - name: Ensure group "sudo" exists
   ansible.builtin.group:
@@ -16,6 +17,7 @@
     append: yes
     create_home: yes
     generate_ssh_key: yes
+    shell: '/bin/zsh'
     password: '{{ user_password }}'
 - name: Enable sudo without password for specified user
   ansible.builtin.template:
@@ -24,3 +26,10 @@
     mode: '0440'
     group: 0
     owner: 0
+- name: Start Hyprland on startup
+  ansible.builtin.copy:
+    src: '.zprofile'
+    dest: '/home/{{ username }}/.zprofile'
+    owner: '{{ username }}'
+    group: '{{ username }}'
+    mode: '0644'
