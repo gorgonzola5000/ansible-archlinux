@@ -10,7 +10,7 @@
   become: true
   become_user: '{{ username }}'
   ansible.builtin.shell:
-    chdir: '/tmp/test'
+    chdir: '/home/{{ username }}'
     cmd: 'git init && git remote add origin {{ dotfiles_repo_url }} ; git fetch --all && git reset --hard origin/main'
   args:
     executable: /bin/bash
@@ -19,4 +19,23 @@
   failed_when:
     - add_result.rc != 0
     - add_result.stderr | default('') is not search("remote .* already exists")
-
+- name: Install pacman packages from pkglist.txt
+  become: true
+  ansible.builtin.shell:
+    cmd: 'pacman -S --needed $(comm -12 <(pacman -Slq | sort) <(sort /home/{{ username }}/.config/pkglist.txt))'
+  args:
+    executable: /bin/bash
+  register: result
+  changed_when: result.rc == 0
+  failed_when:
+    - result.rc != 0
+- name: Make pkglist.txt
+  become: true
+  ansible.builtin.shell:
+    cmd: 'pacman -Qqe > /home/{{ username }}/.config/pkglist.txt'
+  args:
+    executable: /bin/bash
+  register: result
+  changed_when: result.rc == 0
+  failed_when:
+    - result.rc != 0
