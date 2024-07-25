@@ -1,3 +1,4 @@
 ---
 username: gorgonzola5000
 repo_url: https://github.com/gorgonzola5000/ansible-archlinux.git
+dotfiles_repo_url: git@github.com:gorgonzola5000/dotfiles.git

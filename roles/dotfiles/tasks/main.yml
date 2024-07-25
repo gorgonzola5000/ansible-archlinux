@@ -1,0 +1,22 @@
+---
+- name: Ensure '~/Repositories' directory exists
+  ansible.builtin.file:
+    path: '/home/{{ username }}/Repositories'
+    state: directory
+    owner: '{{ username }}'
+    group: '{{ username }}'
+    mode: '0755'
+- name: Add remote 
+  become: true
+  become_user: '{{ username }}'
+  ansible.builtin.shell:
+    chdir: '/tmp/test'
+    cmd: 'git init && git remote add origin {{ dotfiles_repo_url }} ; git fetch --all && git reset --hard origin/main'
+  args:
+    executable: /bin/bash
+  register: add_result
+  changed_when: add_result.rc == 0
+  failed_when:
+    - add_result.rc != 0
+    - add_result.stderr | default('') is not search("remote .* already exists")
+

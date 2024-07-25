@@ -1,10 +1,12 @@
 ---
 - name: Setup Arch Linux
+  become: true
   hosts: dev
   connection: local
   roles:
    - name: user_creation
    - name: autologin
+   - name: dotfiles
   tasks:
    - name: Install packages
      community.general.pacman:
