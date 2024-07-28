@@ -1,7 +1,0 @@
----
-- name: Install 'IWD'
-  pacman_bootstrap:
-    name: iwd
-    state: present
-    chroot_mountpoint: '{{ arch_mnt }}'
-  notify: '{{ "enable" if bootstrap else "restart" }}_iwd'

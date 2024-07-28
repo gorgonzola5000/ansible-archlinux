@@ -1,18 +1,19 @@
 ---
-- name: Ensure '~/Repositories' directory exists
-  ansible.builtin.file:
-    path: '/home/{{ username }}/Repositories'
-    state: directory
-    owner: '{{ username }}'
-    group: '{{ username }}'
-    mode: '0755'
-- name: Add remote 
+- name: Ensure git and github-cli are installed
+  community.general.pacman:
+    name:
+     - git
+     - github-cli
+- name: Add ghcli user using a token
+  ansible.builtin.shell:
+    executable: /bin/bash
+    cmd: 'echo {{ github_token }} | gh auth login --git-protocol ssh --with-token --skip-ssh-key'
+- name: Add dotfiles remote and clone it 
   become: true
   become_user: '{{ username }}'
   ansible.builtin.shell:
     chdir: '/home/{{ username }}'
     cmd: 'git init && git remote add origin {{ dotfiles_repo_url }} ; git fetch --all && git reset --hard origin/main'
-  args:
     executable: /bin/bash
   register: add_result
   changed_when: add_result.rc == 0
@@ -23,17 +24,20 @@
   become: true
   ansible.builtin.shell:
     cmd: 'pacman -S --needed $(comm -12 <(pacman -Slq | sort) <(sort /home/{{ username }}/.config/pkglist.txt))'
-  args:
     executable: /bin/bash
   register: result
   changed_when: result.rc == 0
   failed_when:
     - result.rc != 0
+- name: Delete orphan packages
+  become: true
+  ansible.builtin.shell:
+    cmd: 'pacman -Qqd | pacman --noconfirm -Rsu -'
+  ignore_errors: true
 - name: Make pkglist.txt
   become: true
   ansible.builtin.shell:
     cmd: 'pacman -Qqe > /home/{{ username }}/.config/pkglist.txt'
-  args:
     executable: /bin/bash
   register: result
   changed_when: result.rc == 0

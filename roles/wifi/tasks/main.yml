@@ -1,9 +1,0 @@
----
-- when: wifi | default(false)
-  block:
-
-  - import_tasks: iwd_install.yml
-  - import_tasks: iwd_config.yml
-  - import_tasks: systemd_integration.yml
-  - import_tasks: networkd_integration.yml
-  - import_tasks: dbus_access.yml
