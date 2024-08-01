@@ -1,4 +1,8 @@
 ---
+- name: Run the equivalent of "pacman -Syu" as a separate step
+  community.general.pacman:
+    update_cache: true
+    upgrade: true
 - name: Ensure git and github-cli are installed
   community.general.pacman:
     name:

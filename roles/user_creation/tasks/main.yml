@@ -17,6 +17,7 @@
     append: yes
     create_home: yes
     generate_ssh_key: yes
+    ssh_key_type: 'ed25519'
     shell: '/bin/zsh'
     password: '{{ user_password }}'
 - name: Enable sudo without password for specified user
@@ -26,10 +27,37 @@
     mode: '0440'
     group: 0
     owner: 0
-- name: Start Hyprland on startup
-  ansible.builtin.copy:
-    src: '.zprofile'
-    dest: '/home/{{ username }}/.zprofile'
-    owner: '{{ username }}'
-    group: '{{ username }}'
-    mode: '0644'
+- name: Enable GNOME keyrings
+  block:
+    - name: Install gnome-keyrings and libsecret
+      community.general.pacman:
+        name:
+          - gnome-keyring
+          - libsecret
+        state: present
+    - name: Configure PAM
+      ansible.builtin.lineinfile:
+        path: /etc/pam.d/login
+        line: 'auth       optional     pam_gnome_keyring.so'
+        insertafter: '^auth'
+        state: present
+    - name: Configure PAM
+      ansible.builtin.lineinfile:
+        path: /etc/pam.d/login
+        line: 'session    optional     pam_gnome_keyring.so auto_start'
+        insertafter: '^session'
+        state: present
+- name: Mask gnome-keyring units
+  become: true
+  become_user: '{{ username }}'
+  block:
+    - name: Mask gnome-keyring-daemon.service
+      ansible.builtin.systemd_service:
+        scope: user
+        name: gnome-keyring-daemon.service
+        masked: true
+    - name: Mask gnome-keyring-daemon.socket
+      ansible.builtin.systemd_service:
+        scope: user
+        name: gnome-keyring-daemon.socket
+        masked: true
