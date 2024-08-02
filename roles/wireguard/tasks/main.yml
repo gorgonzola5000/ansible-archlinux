@@ -1,0 +1,33 @@
+---
+- name: Install userspace utilities for WireGuard
+  ansible.builtin.pacman:
+    name:
+     - wireguard-tools
+    state: present
+- name: Ensure /etc/wireguard/ directory exists
+  ansible.builtin.file:
+    path: /etc/wireguard
+    state: directory
+    mode: '0700'
+- name: Generate publickey and privatekey if they are not present
+  ansible.builtin.shell: wg genkey | tee privatekey | wg pubkey > publickey
+  args:
+    chdir: /etc/wireguard
+    creates: publickey
+- name: Check if wireguard interface configuration file exists
+  stat:
+    path: '/etc/wireguard/{{ wg_interface_name }}.conf'
+  register: wg_interface_conf
+- name: Slurp private key
+  become: true
+  ansible.builtin.slurp:
+    src: /etc/wireguard/privatekey
+  register: slurped_wg_privatekey
+  when: wg_interface_conf.stat.exists == false
+- name: Generate wg interface config
+  ansible.builtin.template:
+    dest: '/etc/wireguard/{{ wg_interface_name }}.conf'    
+    force: false
+    mode: '0755'
+    src: wg0.conf.j2
+  when: wg_interface_conf.stat.exists == false

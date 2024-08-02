@@ -7,3 +7,4 @@
    - name: user_creation
    - name: autologin
    - name: dotfiles
+   - name: wireguard

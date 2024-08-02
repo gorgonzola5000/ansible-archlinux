@@ -9,6 +9,8 @@
      - git
      - github-cli
 - name: Add ghcli user using a token
+  become: true
+  become_user: '{{ username }}'
   ansible.builtin.shell:
     executable: /bin/bash
     cmd: 'echo {{ github_token }} | gh auth login --git-protocol ssh --with-token --skip-ssh-key'
