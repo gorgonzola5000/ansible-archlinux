@@ -6,6 +6,7 @@
 - name: Ensure git and github-cli are installed
   community.general.pacman:
     name:
+     - openssh
      - git
      - github-cli
 - name: Add ghcli user using a token
@@ -14,6 +15,12 @@
   ansible.builtin.shell:
     executable: /bin/bash
     cmd: 'echo {{ github_token }} | gh auth login --git-protocol ssh --with-token --skip-ssh-key'
+- name: Add ssh key
+  become: true
+  become_user: '{{ username }}'
+  ansible.builtin.shell:
+    executable: /bin/bash
+    cmd: 'gh ssh-key add /home/{{ username }}/.ssh/id_ed25519.pub'
 - name: Add dotfiles remote and clone it 
   become: true
   become_user: '{{ username }}'
