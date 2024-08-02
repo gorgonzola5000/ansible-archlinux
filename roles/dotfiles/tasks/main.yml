@@ -18,9 +18,9 @@
 - name: Add ssh key
   become: true
   become_user: '{{ username }}'
-  ansible.builtin.shell:
-    executable: /bin/bash
-    cmd: 'gh ssh-key add /home/{{ username }}/.ssh/id_ed25519.pub'
+  ansible.builtin.command: "gh ssh-key add /home/{{ username }}/.ssh/id_ed25519.pub"
+  register: ssh_key_add_output
+  changed_when: '"already exists" not in ssh_key_add_output.stderr'
 - name: Add dotfiles remote and clone it 
   become: true
   become_user: '{{ username }}'
