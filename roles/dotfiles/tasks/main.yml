@@ -3,18 +3,26 @@
   community.general.pacman:
     update_cache: true
     upgrade: true
+  diff: true
 - name: Ensure git and github-cli are installed
   community.general.pacman:
     name:
      - openssh
      - git
      - github-cli
-- name: Add ghcli user using a token
+     - grep
+- name: Check .config/gh/hosts.yml for user
+  ansible.builtin.shell: grep '{{ username }}' /home/{{ username }}/.config/gh/hosts.yml
+  changed_when: false
+  register: grep_result
+  ignore_errors: true
+- name: Add GitHub authorize user using a token
   become: true
   become_user: '{{ username }}'
   ansible.builtin.shell:
+    cmd: "echo {{ github_token }} | gh auth login --git-protocol ssh --with-token --skip-ssh-key"
     executable: /bin/bash
-    cmd: 'echo {{ github_token }} | gh auth login --git-protocol ssh --with-token --skip-ssh-key'
+  when: grep_result.rc != 0
 - name: Add ssh key
   become: true
   become_user: '{{ username }}'
@@ -42,6 +50,7 @@
   changed_when: result.rc == 0
   failed_when:
     - result.rc != 0
+  diff: true
 - name: Delete orphan packages
   become: true
   ansible.builtin.shell:
