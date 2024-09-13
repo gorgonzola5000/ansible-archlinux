@@ -1,0 +1,12 @@
+---
+- name: Install userspace utilities for WireGuard
+  ansible.builtin.pacman:
+    name:
+      - avahi
+      - nss-mdns
+    state: present
+- name: Enable avahi daemon
+  ansible.builtin.systemd_service:
+    name: avahi-daemon.service 
+    enabled: true
+    state: started

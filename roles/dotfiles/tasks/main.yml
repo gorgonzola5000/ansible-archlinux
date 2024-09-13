@@ -7,10 +7,10 @@
 - name: Ensure git and github-cli are installed
   community.general.pacman:
     name:
-     - openssh
-     - git
-     - github-cli
-     - grep
+      - openssh
+      - git
+      - github-cli
+      - grep
 - name: Check .config/gh/hosts.yml for user
   ansible.builtin.shell: grep '{{ username }}' /home/{{ username }}/.config/gh/hosts.yml
   changed_when: false
@@ -41,6 +41,17 @@
   failed_when:
     - add_result.rc != 0
     - add_result.stderr | default('') is not search("remote .* already exists")
+- name: Find all files in '/home/{{ username }}/.config/scripts'
+  find:
+    paths: '/home/{{ username }}/.config/scripts'
+  register: find
+- name: Create symlinks to /usr/local/bin
+  become: True
+  file:
+    src: "{{ item.path }}"
+    path: "/usr/local/bin/{{ item.path | basename }}"
+    state: link
+  with_items: "{{ find.files }}"
 - name: Install pacman packages from pkglist.txt
   become: true
   ansible.builtin.shell:
@@ -65,3 +76,15 @@
   changed_when: result.rc == 0
   failed_when:
     - result.rc != 0
+- name: Ensure flatpak is installed
+  community.general.pacman:
+    name: flatpak
+    state: present
+- name: Update flatpaks
+  ansible.builtin.shell:
+    cmd: 'flatpak update -y'
+    executable: /bin/bash
+- name: Install flatpaks
+  community.general.flatpak:
+    name: '{{ flatpak_list }}'
+    state: present
