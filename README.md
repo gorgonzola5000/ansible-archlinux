@@ -35,7 +35,7 @@ It is going to prompt you for your password to the Ansible Vault you created and
 
 ## Post-install
 
-If the installation succeeded you will be prompted for your LUKS partition password and then put into TTY where you should login as root using the credentials you setup. You can then execute the script that was copied to your machine to further configure your OS: `# ansible_archlinux.sh <branch_name>'.
+If the installation succeeded you will be prompted for your LUKS partition password and then put into TTY where you should login as root using the credentials you setup. You can then execute the script that was copied to your machine to further configure your OS: `# ansible_archlinux.sh <branch_name>`.
 
 You can now once again reboot your system and you should be good to go.
 
